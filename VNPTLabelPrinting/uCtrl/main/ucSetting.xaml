@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="VNPTLabelPrinting.uCtrl.ucSetting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VNPTLabelPrinting.uCtrl"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Margin="10" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <StackPanel Margin="10,10,10,10">
+                <Border BorderBrush="#777777" BorderThickness="0,0,0,1"/>
+                <StackPanel x:Name="sp_setting"/>
+            </StackPanel>
+
+        </ScrollViewer>
+
+        <Button Click="Button_Click" Grid.Row="1" FontSize="22" FontWeight="SemiBold" Content="Save Setting"/>
+
+    </Grid>
+    
+</UserControl>

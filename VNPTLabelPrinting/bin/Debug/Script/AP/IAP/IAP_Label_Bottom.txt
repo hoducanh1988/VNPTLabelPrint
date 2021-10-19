@@ -1,0 +1,62 @@
+/*
+Version=IAP000000U0001
+BuildTime=13/11/2020 17:01
+Copyright=Copyright of VNPT Technology 2020
+Product=IAP
+Station=In tem đáy IAP
+About={
+Version=IAP000000U0001;Content=- Xây dựng phần mềm in tem đáy sản phẩm IAP;Date=13/11/2020;Type=Tạo mới;Person=Hồ Đức Anh
+}
+*/
+
+using System;
+using System.Text;
+using System.Net.NetworkInformation;
+using System.Threading;
+using System.Text.RegularExpressions;
+using System.Linq;
+using System.Collections.Generic;
+using Automation;
+
+namespace AP {
+
+    public class IAP_LabelBottom {
+
+	[STAThread]
+	static void Main() { }
+	
+		public string logSystem {get;set;}
+		
+		//[Yes]
+		public bool printingLabelBottomIAP(string setting_layout_file, string setting_printer_name, string setting_copies, string setting_product_number, string setting_factory, string setting_hardware_version, string setting_code_specify_mac, string setting_hardware_info, string barcode_mac_address){
+			bool r = false;
+			setting_layout_file = string.Format("{0}Layout\\{1}", AppDomain.CurrentDomain.BaseDirectory, setting_layout_file);
+			logSystem += string.Format("> mac address: {0}\n", barcode_mac_address);
+			
+			//check mac_address format
+			string pattern = "^[0-9,A-F]{12}$";
+			r = Regex.IsMatch(barcode_mac_address, pattern, RegexOptions.IgnoreCase);
+			logSystem += string.Format("> check mac address with pattern {0}: {1}\n", pattern, r);
+			if(!r) return false;
+			
+			//gen serial number
+			logSystem += string.Format("> setting_code_specify_mac : {0}\n", setting_code_specify_mac);
+			string serial_number = Automation.Converter.macToFactorySerialNumber(barcode_mac_address, setting_product_number, setting_factory, setting_hardware_version, setting_code_specify_mac);
+			logSystem += string.Format("> gen from mac address to factory serial number: {0}\n", serial_number);
+			if (serial_number == null) return false;
+			
+			//printing label
+			var bartender = new BartenderHelper();
+			var MAC = new BartenderHelper.ItemVariable() { Name = "MAC", Value = barcode_mac_address };
+			var SN = new BartenderHelper.ItemVariable() { Name = "SN", Value = serial_number };
+			var HW = new BartenderHelper.ItemVariable() { Name = "HW", Value = setting_hardware_info };
+			
+			r = bartender.printLabel(setting_layout_file, setting_printer_name, setting_copies, MAC, SN, HW);
+			bartender.Dispose();
+			
+			logSystem += string.Format("> printing label: {0}\n", r);
+			return r;
+		}
+		
+    }
+}

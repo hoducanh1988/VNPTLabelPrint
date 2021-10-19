@@ -1,0 +1,28 @@
+﻿<Window x:Class="EncryptionFile.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EncryptionFile"
+        mc:Ignorable="d"
+        Title="Encryption File" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+
+    <StackPanel Margin="10">
+        <Label Content="Select file for encryption: "/>
+        <Grid>
+            <TextBox x:Name="txt_efile" IsReadOnly="True" Height="25" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="0,0,75,0" />
+            <Button Tag="browser_file_en" Click="Button_Click" Height="25" Width="70" HorizontalAlignment="Right" Content="browser..."/>
+        </Grid>
+        <Button Tag="start_en" Click="Button_Click" Height="40" FontSize="20" Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" Content="Start"/>
+
+        <Label Margin="0,15,0,0" Content="Select file for decryption: "/>
+        <Grid>
+            <TextBox x:Name="txt_dfile" IsReadOnly="True" Height="25" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="0,0,75,0" />
+            <Button Tag="browser_file_de" Click="Button_Click" Height="25" Width="70" HorizontalAlignment="Right" Content="browser..."/>
+        </Grid>
+        <Button Tag="start_de" Click="Button_Click" Height="40" FontSize="20" Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" Content="Start"/>
+
+
+    </StackPanel>
+    
+</Window>

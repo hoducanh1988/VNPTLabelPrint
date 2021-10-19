@@ -1,0 +1,120 @@
+/*
+Version=ONHOMEVN0U0001
+BuildTime=19/04/2021 14:40
+Copyright=Copyright of VNPT Technology 2021
+Product=ONE HOME
+Station=MASTERBOX LABEL
+About={
+Version=ONHOMEVN0U0001;Content=- Xây dựng phần mềm in tem master box;Date=19/04/2021;Type=Tạo mới;Person=Hồ Đức Anh
+}
+*/
+
+using System;
+using System.Text;
+using System.Net.NetworkInformation;
+using System.Threading;
+using System.Text.RegularExpressions;
+using System.Linq;
+using System.Collections.Generic;
+using Automation;
+
+namespace ONEHOME {
+
+    public class OneHome_LabelMasterBox {
+
+	[STAThread]
+	static void Main() { }
+	
+		public string logSystem {get;set;}
+	
+		//[Yes]
+		public bool LabelMasterBox(string setting_layout_file, string setting_db_file, string setting_printer_name, string setting_copies, string setting_product_number, string setting_factory, string setting_line, string setting_work_order, string setting_production_year, string setting_hardware_version, string setting_serial_quantity, string setting_product_code, string setting_firmware, string setting_color, string setting_metal_frame, ref string list_barcode_dummy_serial_number){
+			bool r = true;
+			setting_layout_file = string.Format("{0}Layout\\{1}", AppDomain.CurrentDomain.BaseDirectory, setting_layout_file);
+			setting_db_file = string.Format("{0}DB\\{1}", AppDomain.CurrentDomain.BaseDirectory, setting_db_file);
+			logSystem += string.Format("> setting_db_file: {0}\n", setting_db_file);
+			logSystem += string.Format("> serial number barcode: {0}\n", list_barcode_dummy_serial_number);
+			logSystem += string.Format("> setting_layout_file: {0}\n", setting_layout_file);
+			
+			//init parameters
+			var bartender = new BartenderHelper();
+			var WORK_ORDER = new BartenderHelper.ItemVariable() { Name = "WOrder", Value = setting_work_order };
+			var PRODUCT = new BartenderHelper.ItemVariable() { Name = "PCode", Value = setting_product_code };
+			var FIRMWARE = new BartenderHelper.ItemVariable() { Name = "PFirmware", Value = setting_firmware };
+			var COLOR = new BartenderHelper.ItemVariable() { Name = "PColor", Value = setting_color == "" ? setting_color : string.Format("Color: {0}", setting_color) };
+			var METAL_FRAME = new BartenderHelper.ItemVariable() { Name = "MFrame", Value = setting_metal_frame == "" ? setting_metal_frame : string.Format("Metal frame: {0}", setting_metal_frame) };
+			var DATE = new BartenderHelper.ItemVariable() { Name = "Date", Value = DateTime.Now.ToString("dd/MM/yyyy") };
+			
+			string lot_number = "";
+			var data = Automation.IO.FromFile("LOT.ini");
+			if (data == null) lot_number = setting_product_number + setting_factory + setting_production_year + setting_line + "_" + "000001";
+			else {
+				string currYear = data[0].Substring(4,2);
+				string currIndex = data[0].Substring(8,6);
+				if (Automation.Parser.stringToInt(currYear) != Automation.Parser.stringToInt(setting_production_year)) currIndex = "000001";
+				else currIndex = Automation.Converter.addStringInt(currIndex, 1);
+				lot_number = setting_product_number + setting_factory + setting_production_year + setting_line + "_" + currIndex;
+			}
+			var LOT = new BartenderHelper.ItemVariable() { Name = "LotNo", Value = lot_number };
+			
+			List<BartenderHelper.ItemVariable> listVar = new List<BartenderHelper.ItemVariable>();
+			listVar.Add(WORK_ORDER);
+			listVar.Add(PRODUCT);
+			listVar.Add(FIRMWARE);
+			listVar.Add(COLOR);
+			listVar.Add(DATE);
+			listVar.Add(LOT);
+			listVar.Add(METAL_FRAME);
+			
+			string[] buffer = list_barcode_dummy_serial_number.Split('\n');
+			
+			if (buffer.Length > 0) {
+				for (int i=0;i<buffer.Length-1;i++){
+					var SN = new BartenderHelper.ItemVariable() { Name = string.Format("SN{0}", i+1), Value = buffer[i] };
+					listVar.Add(SN);
+				}
+			}
+			
+			//print label
+			r = bartender.printLabel(setting_layout_file, setting_printer_name, setting_copies, listVar.ToArray());
+			bartender.Dispose();
+			
+			logSystem += string.Format("> printing label: {0}\n", r);
+			
+			//save lot number to file
+			if(r) Automation.IO.ToFile("LOT.ini", null, lot_number);
+			
+			//save log serial
+			var msac = new MicrosoftAccessHelper(setting_db_file);
+			if (buffer.Length > 0) {
+				for (int i=0;i<buffer.Length-1;i++){
+					logItem li = new logItem() {
+						ID = "",
+						Serial = buffer[i],
+						TimeScan = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+						Lot= lot_number,
+						ProductCode = setting_product_code,
+						Line = setting_line,
+						WorkOrder = setting_work_order,
+						Color = ""
+					};
+					msac.insertDataRow<logItem>("SN_Print_Log", li, "ID");
+				}
+			}
+			msac.Close();
+			list_barcode_dummy_serial_number = lot_number;
+			return r;
+		}
+		
+		public class logItem {
+			public string ID {get;set;}
+			public string Serial {get;set;}
+			public string TimeScan {get;set;}
+			public string Lot {get;set;}
+			public string Color {get;set;}
+			public string ProductCode {get;set;}
+			public string Line {get;set;}
+			public string WorkOrder {get;set;}
+		}
+    }
+}

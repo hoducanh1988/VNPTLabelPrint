@@ -1,0 +1,73 @@
+/*
+Version=OHGW01VN0U0001
+BuildTime=08/01/2021 17:00
+Copyright=Copyright of VNPT Technology 2021
+Product=HOME GATEWAY
+Station=GIFTBOX LABEL
+About={
+Version=OHGW01VN0U0001;Content=- Xây dựng phần mềm in tem đáy one home - home smoke detector;Date=08/01/2021;Type=Tạo mới;Person=Hồ Đức Anh
+}
+*/
+
+using System;
+using System.Text;
+using System.Net.NetworkInformation;
+using System.Threading;
+using System.Text.RegularExpressions;
+using System.Linq;
+using System.Collections.Generic;
+using Automation;
+
+namespace ONEHOME {
+
+    public class HomeGateway_LabelGiftBox {
+
+	[STAThread]
+	static void Main() { }
+	
+		public string logSystem {get;set;}
+		
+		//[Yes]
+		public bool LabelGiftBoxHomeGateway(string setting_layout_file, string setting_printer_name, string setting_copies, string setting_device_name, string setting_home_gateway_model, string barcode_mac_address, string barcode_serial_number){
+			bool r = false;
+			setting_layout_file = string.Format("{0}Layout\\{1}", AppDomain.CurrentDomain.BaseDirectory, setting_layout_file);
+			logSystem += string.Format("> mac address barcode: {0}\n", barcode_mac_address);
+			logSystem += string.Format("> serial number barcode: {0}\n", barcode_serial_number);
+			
+			//check barcode_mac_address format
+			string pattern_mac = "^[0-9,A-F]{12}$";
+			r = Regex.IsMatch(barcode_mac_address, pattern_mac, RegexOptions.IgnoreCase);
+			logSystem += string.Format("> check mac address barcode with pattern {0}: {1}\n", pattern_mac, r);
+			if(!r) return false;
+			
+			//check barcode_serial_number format
+			string pattern_sn = "^[0-9]{4}[0-9,A-Z][0-5][0-9][0-9]F[0-9,A-F]{6}$";
+			r = Regex.IsMatch(barcode_serial_number, pattern_sn, RegexOptions.IgnoreCase);
+			logSystem += string.Format("> check serial number barcode with pattern {0}: {1}\n", pattern_sn, r);
+			if(!r) return false;
+			
+			//check matching barcode_mac_address and barcode_serial_number
+			r = Automation.Parser.isMatchingMacAndSerialOneHome(barcode_mac_address, barcode_serial_number);
+			logSystem += string.Format("> check matching mac address barcode with serial number barcode: {0}\n", r);
+			if(!r) return false;
+			
+			//printing label
+			var bartender = new BartenderHelper();
+			var UID = new BartenderHelper.ItemVariable() { Name = "UID", Value = barcode_mac_address };
+			var DATE = new BartenderHelper.ItemVariable() { Name = "DATE", Value = DateTime.Now.ToString("MM/yyyy") };
+			var SN = new BartenderHelper.ItemVariable() { Name = "SN", Value = barcode_serial_number };
+			var MODEL = new BartenderHelper.ItemVariable() { Name = "MODEL", Value = setting_home_gateway_model };
+			var DEVICE = new BartenderHelper.ItemVariable() { Name = "DEVICE", Value = setting_device_name };
+			var LABLE = new BartenderHelper.ItemVariable() { Name = "LABLE", Value = "Mac:" };
+			
+			r = bartender.printLabel(setting_layout_file, setting_printer_name, setting_copies, UID, MODEL, SN, DEVICE, LABLE, DATE);
+			bartender.Dispose();
+			
+			logSystem += string.Format("> printing label: {0}\n", r);
+			return r;
+		}
+		
+		
+		
+    }
+}

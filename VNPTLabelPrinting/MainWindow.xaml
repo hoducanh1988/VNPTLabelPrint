@@ -1,0 +1,111 @@
+﻿<Window x:Class="VNPTLabelPrinting.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VNPTLabelPrinting"
+        mc:Ignorable="d"
+        Title="{Binding Path=appTitle, UpdateSourceTrigger=PropertyChanged}" 
+        Height="650" Width="1000" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+
+    <Grid Margin="5,0,5,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+        <WrapPanel Margin="0,2,0,0">
+            <Grid>
+                <Path MouseDown="WrapPanel_MouseDown" Fill="Black" Data="M 10,10 L 20,20 20,15 30,15 30,5 20,5 20,0 10,10" StrokeThickness="1" Stroke="Black"/>
+                <Path MouseDown="WrapPanel_MouseDown" Fill="White" Data="M 12,10 L 19,18 18,13 28,13 28,7 18,7 20,0 12,10" StrokeThickness="1" Stroke="Black"/>
+            </Grid>
+            
+            <Label VerticalAlignment="Center" Padding="10,0,0,0" MouseDown="WrapPanel_MouseDown" Margin="0,-5,0,0" Foreground="Black" Content="Back to login" FontSize="15" FontWeight="SemiBold"/>
+        </WrapPanel>
+
+        <StackPanel Grid.Row="1">
+            <WrapPanel Margin="0,-10,0,0">
+                <Label FontSize="22" FontWeight="Bold" Content="Product:"/>
+                <Label FontSize="22" FontWeight="Bold" Content="{Binding Path=productName, UpdateSourceTrigger=PropertyChanged}"/>
+            </WrapPanel>
+            <WrapPanel Margin="0,-7,0,0">
+                <Label FontSize="17" FontWeight="SemiBold" Content="Station:"/>
+                <Label FontSize="17" FontWeight="SemiBold" Content="{Binding Path=Station, UpdateSourceTrigger=PropertyChanged}"/>
+            </WrapPanel>
+        </StackPanel>
+
+
+        <Border Grid.Row="2" BorderBrush="#777777" BorderThickness="0,0,0,0.5">
+            <Grid Margin="0,5,0,3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="4"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <WrapPanel Margin="0,-2,0,0">
+                        <WrapPanel.Resources>
+                            <Style TargetType="Label">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="FontSize" Value="17"/>
+                                <Setter Property="Width" Value="100"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                                <EventSetter Event="MouseDown" Handler="Label_MouseDown"/>
+
+                                <Style.Triggers>
+                                    <Trigger Property="Label.IsMouseOver" Value="False">
+                                        <Setter Property="FontWeight" Value="Normal"/>
+                                    </Trigger>
+                                    <Trigger Property="Label.IsMouseOver" Value="True">
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </WrapPanel.Resources>
+                        <Label Content="RUN ALL"/>
+                        <Label Content="SETTING"/>
+                        <Label Content="LOG"/>
+                        <Label Content="HELP"/>
+                        <Label Content="ABOUT"/>
+                    </WrapPanel>
+                </Grid>
+                <Label x:Name="lblMinus" Grid.Row="1" VerticalAlignment="Stretch" Width="100" HorizontalAlignment="Left" Background="Lime"/>
+            </Grid>
+        </Border>
+
+
+        <Grid  Grid.Row="3" x:Name="grid_main"/>
+
+        <WrapPanel Opacity="0.3" Grid.Row="4">
+            <Label Content="Auto focus Interval:" />
+            <TextBox Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="BorderBrush" Value="#777777"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="Width" Value="60"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Background" Value="White"/>
+                        <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"/>
+                        <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="Background" Value="#e1f2b8"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+            <Label Content=" ms" />
+        </WrapPanel>
+        
+    </Grid>
+
+
+</Window>

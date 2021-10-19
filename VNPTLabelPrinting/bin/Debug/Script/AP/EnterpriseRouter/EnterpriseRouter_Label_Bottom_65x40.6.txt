@@ -1,0 +1,96 @@
+/*
+Version=EPRS01VN0U0001
+BuildTime=15/07/2021 10:40
+Copyright=Copyright of VNPT Technology 2021
+Product=ENTERPRISE ROUTER
+Station=Bottom Label
+About={
+Version=EPRS01VN0U0001;Content=- Xây dựng phần mềm in tem đáy sản phẩm enterprise router;Date=15/07/2021;Type=Tạo mới;Person=Hồ Đức Anh
+}
+*/
+
+using System;
+using System.Text;
+using System.Net.NetworkInformation;
+using System.Threading;
+using System.Text.RegularExpressions;
+using System.Linq;
+using System.Collections.Generic;
+using Automation;
+
+namespace AP {
+
+    public class EnterPriseRouter_LabelBottom {
+
+	[STAThread]
+	static void Main() { }
+	
+		public string logSystem {get;set;}
+		
+		//[Yes]
+		public bool LabelBottom(string setting_layout_file, string setting_printer_name, string setting_copies, string setting_product_number, string setting_factory, string setting_hardware_version, string setting_model_name, string setting_code_specify_mac, string setting_imei_filter, string barcode_mac_address, string barcode_imei1, string barcode_imei2){
+			bool r = false;
+			setting_layout_file = string.Format("{0}Layout\\{1}", AppDomain.CurrentDomain.BaseDirectory, setting_layout_file);
+			logSystem += string.Format("> mac address: {0}\n", barcode_mac_address);
+			logSystem += string.Format("> imei 1: {0}\n", barcode_imei1);
+			logSystem += string.Format("> imei 2: {0}\n", barcode_imei2);
+			
+			//get imei from barcode imei
+			string imei1 = "", imei2 = "";
+			if (setting_imei_filter.Trim().Length == 0) {
+				imei1 = barcode_imei1;
+				imei2 = barcode_imei2;
+			}
+			else {
+				string split_str = setting_imei_filter.Split(':')[1].Split('=')[1].Replace("\"", "").Replace("\r", "").Replace("\n", "").Trim();
+				int idx = int.Parse(setting_imei_filter.Split(':')[0].Split('=')[1]);
+				imei1 = barcode_imei1.Split(new string[] {split_str}, StringSplitOptions.None)[idx];
+				imei2 = barcode_imei2.Split(new string[] {split_str}, StringSplitOptions.None)[idx];
+			}
+			
+			//check imei 1
+			string pattern_imei = "^[0-9]{15}$";
+			r = Regex.IsMatch(imei1, pattern_imei, RegexOptions.IgnoreCase);
+			logSystem += string.Format("> check imei1 with pattern {0}: {1}\n", pattern_imei, r);
+			if(!r) return false;
+			r = Automation.Parser.isIMEINumber(imei1);
+			logSystem += string.Format("> check imei1 valid: {0}\n", r);
+			if(!r) return false;
+			
+			//check imei 2
+			r = Regex.IsMatch(imei2, pattern_imei, RegexOptions.IgnoreCase);
+			logSystem += string.Format("> check imei2 with pattern {0}: {1}\n", pattern_imei, r);
+			if(!r) return false;
+			r = Automation.Parser.isIMEINumber(imei2);
+			logSystem += string.Format("> check imei2 valid: {0}\n", r);
+			if(!r) return false;
+			
+			//check barcode mac address format
+			string pattern = "^[0-9,A-F]{12}$";
+			r = Regex.IsMatch(barcode_mac_address, pattern, RegexOptions.IgnoreCase);
+			logSystem += string.Format("> check mac address with pattern {0}: {1}\n", pattern, r);
+			if(!r) return false;
+			
+			//gen serial number from mac address
+			logSystem += string.Format("> setting_code_specify_mac : {0}\n", setting_code_specify_mac);
+			string serial_number = Automation.Converter.macToFactorySerialNumber(barcode_mac_address, setting_product_number, setting_factory, setting_hardware_version, setting_code_specify_mac);
+			logSystem += string.Format("> gen from mac address to factory serial number: {0}\n", serial_number);
+			if (serial_number == null) return false;
+			
+			//printing label
+			var bartender = new BartenderHelper();
+			var MODEL = new BartenderHelper.ItemVariable() { Name = "MODEL", Value = setting_model_name };
+			var SN = new BartenderHelper.ItemVariable() { Name = "SN", Value = serial_number };
+			var IMEI1 = new BartenderHelper.ItemVariable() { Name = "IMEI1", Value = imei1 };
+			var IMEI2 = new BartenderHelper.ItemVariable() { Name = "IMEI2", Value = imei2 };
+			
+			
+			r = bartender.printLabel(setting_layout_file, setting_printer_name, setting_copies, MODEL, SN, IMEI1, IMEI2);
+			bartender.Dispose();
+			
+			logSystem += string.Format("> printing label: {0}\n", r);
+			return r;
+		}
+		
+    }
+}

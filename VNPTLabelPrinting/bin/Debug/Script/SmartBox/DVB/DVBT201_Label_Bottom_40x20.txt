@@ -1,0 +1,55 @@
+/*
+Version=DVB201000U0001
+BuildTime=11/12/2020 16:20
+Copyright=Copyright of VNPT Technology 2020
+Product=DVBT201
+Station=In tem đáy
+About={
+Version=DVB201000U0001;Content=- Xây dựng phần mềm in tem đáy sản phẩm DVBT201;Date=11/12/2020;Type=Tạo mới;Person=Hồ Đức Anh
+}
+*/
+
+using System;
+using System.Text;
+using System.Net.NetworkInformation;
+using System.Threading;
+using System.Text.RegularExpressions;
+using System.Linq;
+using System.Collections.Generic;
+using Automation;
+
+namespace DVBT201 {
+
+    public class DVBT201_LabelBottom {
+
+	[STAThread]
+	static void Main() { }
+	
+		public string logSystem {get;set;}
+		
+		//[Yes]
+		public bool printingLabelGiftBoxOutdoor(string setting_layout_file, string setting_printer_name, string setting_copies, string setting_label_date, string barcode_serialnumber){
+			bool r = false;
+			setting_layout_file = string.Format("{0}Layout\\{1}", AppDomain.CurrentDomain.BaseDirectory, setting_layout_file);
+			logSystem += string.Format("> serial number: {0}\n", barcode_serialnumber);
+			
+			//check barcode serial number format
+			//120-1-1-22-1-F-123456
+			string pattern = "^[0-9]{3}[1-2][0-Z][0-5]{2}[0-9][0-9,A-F][0-9,A-F]{6}$";
+			r = Regex.IsMatch(barcode_serialnumber, pattern, RegexOptions.IgnoreCase);
+			logSystem += string.Format("> check serial number barcode with pattern {0}: {1}\n", pattern, r);
+			if(!r) return false;
+			
+			//printing label
+			var bartender = new BartenderHelper();
+			var SN = new BartenderHelper.ItemVariable() { Name = "SN", Value = barcode_serialnumber };
+			var TG = new BartenderHelper.ItemVariable() { Name = "TG", Value = setting_label_date };
+			r = bartender.printLabel(setting_layout_file, setting_printer_name, setting_copies, SN, TG);
+			bartender.Dispose();
+			
+			logSystem += string.Format("> printing label: {0}\n", r);
+			return r;
+		}
+		
+    }
+}
