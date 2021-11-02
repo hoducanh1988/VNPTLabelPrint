@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrinting\VNPTLabelPrinting\VNPTLabelPrinting\obj\Debug\
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\VNPTLabelPrinting\obj\Debug\
 VNPTLabelPrinting
 none
 false
 DEBUG;TRACE
-G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrinting\VNPTLabelPrinting\VNPTLabelPrinting\App.xaml
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\VNPTLabelPrinting\App.xaml
 171292293203
 
 29-1317167009
-17-1486479617
+17-1245196734
 LoginWindow.xaml;MainWindow.xaml;sWndw\InputFromBarcode.xaml;uCtrl\main\ucAbout.xaml;uCtrl\main\ucHelp.xaml;uCtrl\main\ucLog.xaml;uCtrl\main\ucRunAll.xaml;uCtrl\main\ucSetting.xaml;uCtrl\sub\ucDBFile.xaml;uCtrl\sub\ucInstruction.xaml;uCtrl\sub\ucItemComboboxSetting.xaml;uCtrl\sub\ucItemInputListBarcode.xaml;uCtrl\sub\ucItemInputQR.xaml;uCtrl\sub\ucItemLayoutFileSetting.xaml;uCtrl\sub\ucItemPrinterSetting.xaml;uCtrl\sub\ucItemSetting.xaml;uCtrl\sub\ucItemInputBarcode.xaml;
 
 False

@@ -1,0 +1,79 @@
+/*
+Version=SV2MOXVN0U0001
+BuildTime=01/11/2021 09:30
+Copyright=Copyright of VNPT Technology 2020
+Product=IP CAMERA
+Station=Label GiftBox
+About={
+Version=SV2MOXVN0U0001;Content=- Xây dựng phần mềm in tem giftbox ip camera;Date=01/11/2021;Type=Tạo mới;Person=Hồ Đức Anh
+}
+*/
+
+using System;
+using System.Text;
+using System.Net.NetworkInformation;
+using System.Threading;
+using System.Text.RegularExpressions;
+using System.Linq;
+using System.Collections.Generic;
+using Automation;
+
+namespace IPCAM {
+
+    public class SV2M_LabelGiftBox {
+
+	[STAThread]
+	static void Main() { }
+	
+		public string logSystem {get;set;}
+		
+		//[Yes]
+		public bool printingLabelGiftBox(string setting_layout_file, string setting_printer_name, string setting_copies, string setting_product_number, string setting_factory, string setting_hardware_version, string setting_sv2m_model_number, string setting_code_serial_number, string barcode_mac_address, string barcode_id){
+			bool r = false;
+			setting_layout_file = string.Format("{0}Layout\\{1}", AppDomain.CurrentDomain.BaseDirectory, setting_layout_file);
+			logSystem += string.Format("> mac address: {0}\n", barcode_mac_address);
+			logSystem += string.Format("> id: {0}\n", barcode_id);
+			barcode_mac_address = barcode_mac_address.ToUpper();
+			barcode_id = barcode_id.ToUpper();
+			
+			//check mac_address format
+			string pattern_mac = "^[0-9,A-F]{12}$";
+			r = Regex.IsMatch(barcode_mac_address, pattern_mac, RegexOptions.IgnoreCase);
+			logSystem += string.Format("> check mac address with pattern {0}: {1}\n", pattern_mac, r);
+			if(!r) return false;
+			
+			//check id format
+			string pattern_id = "^[0-9,A-Z]{13}$";
+			r = Regex.IsMatch(barcode_id, pattern_id, RegexOptions.IgnoreCase);
+			logSystem += string.Format("> check id with pattern {0}: {1}\n", pattern_id, r);
+			if(!r) return false;
+			
+			//gen serial number
+			logSystem += string.Format("> setting_code_serial_number : {0}\n", setting_code_serial_number);
+			string serial_number = Automation.Converter.macToFactorySerialNumber(barcode_mac_address, setting_product_number, setting_factory, setting_hardware_version, setting_code_serial_number);
+			logSystem += string.Format("> gen from mac address to factory serial number: {0}\n", serial_number);
+			if (serial_number == null) return false;
+			
+			//gen logo text
+			string logo_text = setting_sv2m_model_number.Contains("OD") ? "Secure Vision Dome Camera" : "Secure Vision Bullet Camera";
+			logSystem += string.Format("> gen logo text from model number: {0}\n", logo_text);
+			
+			//printing label
+			var bartender = new BartenderHelper();
+			var MAC = new BartenderHelper.ItemVariable() { Name = "MAC", Value = barcode_mac_address };
+			var SN = new BartenderHelper.ItemVariable() { Name = "SN", Value = serial_number };
+			var ID = new BartenderHelper.ItemVariable() { Name = "ID", Value = barcode_id };
+			var MODEL = new BartenderHelper.ItemVariable() { Name = "MODEL", Value = setting_sv2m_model_number };
+			var LOGO = new BartenderHelper.ItemVariable() { Name = "LOGO", Value = logo_text };
+			
+			r = bartender.printLabel(setting_layout_file, setting_printer_name, setting_copies, MAC, SN, ID, MODEL, LOGO);
+			bartender.Dispose();
+			
+			logSystem += string.Format("> printing label: {0}\n", r);
+			return r;
+		}
+		
+		
+		
+    }
+}

@@ -143,6 +143,13 @@ namespace VNPTLabelPrinting.uCtrl
                                 this.sp_setting.Children.Add(ucItem);
                                 break;
                             }
+                        case var s when sri.Contains("sv2m model number"): {
+                                List<string> list_str = new List<string>() { "SV2MOD01", "SV2MOF01", "SV2MOF02" };
+                                ucItemComboboxSetting ucItem = new ucItemComboboxSetting(list_str);
+                                ucItem.DataContext = item_info;
+                                this.sp_setting.Children.Add(ucItem);
+                                break;
+                            }
                         default: {
                                 ucItemSetting ucItem = new ucItemSetting();
                                 ucItem.DataContext = item_info;

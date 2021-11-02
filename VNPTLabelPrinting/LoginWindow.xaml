@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VNPTLabelPrinting"
         xmlns:custom="clr-namespace:VNPTLabelPrinting.Function.Custom"
         mc:Ignorable="d"
-        Title="Version: XXXXXXXXXXXXXX - Build Time: 10/09/2021 08:30 - Copyright of VNPT Technology 2021" Height="500" Width="700" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        Title="Build Time: 01/11/2021 09:30 - Copyright of VNPT Technology 2021" Height="500" Width="700" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         Background="#ffffff">
 
     <Window.Resources>

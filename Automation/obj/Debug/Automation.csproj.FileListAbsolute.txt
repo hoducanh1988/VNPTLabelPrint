@@ -30,3 +30,13 @@ G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrintin
 G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrinting\VNPTLabelPrinting\Automation\obj\Debug\Interop.ADOX.dll
 G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrinting\VNPTLabelPrinting\Automation\obj\Debug\Automation.csproj.ResolveComReference.cache
 G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrinting\VNPTLabelPrinting\Automation\obj\Debug\Automation.csproj.AssemblyReference.cache
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\VNPTLabelPrinting\bin\Debug\Automation.dll
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\VNPTLabelPrinting\bin\Debug\Automation.pdb
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\Automation\obj\Debug\Automation.csprojAssemblyReference.cache
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\Automation\obj\Debug\Interop.ADODB.dll
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\Automation\obj\Debug\Interop.ADOX.dll
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\Automation\obj\Debug\Automation.csproj.ResolveComReference.cache
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\Automation\obj\Debug\Automation.csproj.CoreCompileInputs.cache
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\Automation\obj\Debug\Automation.csproj.CopyComplete
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\Automation\obj\Debug\Automation.dll
+G:\Backup_Tool_Test\repos\_Git_________________________________\VNPTLabelPrint\Automation\obj\Debug\Automation.pdb
